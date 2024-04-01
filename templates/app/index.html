@@ -6,10 +6,29 @@
 
 {% block body %}
     <h1 class="text-center">Добро пожаловать на главную!</h1>
+    <a class="btn btn-primary" href="{% url "app:category_add" %}">Добавить</a>
+    {% if errors.delete %}
+        <div class="alert alert-danger">
+            {{ errors.delete }}
+        </div>
+    {% endif %}
     {% for cat in cate %}
         <div class="card">
             <h5>{{ cat.id }}</h5>
-            <p>{{ cat.name }}</p>
+            <p><a href="{% url "app:category_edit" cat.id %}" class="btn btn-link">{{ cat.name }}</a></p>
+            <form method="post" action="{% url "app:index" %}" onsubmit="deleteCategory(event)">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{ cat.id }}">
+                <input type="submit" class=" form-control btn btn-danger" value="Удалить">
+            </form>
         </div>
     {% endfor %}
+    <script>
+        function deleteCategory(event) {
+            event.preventDefault()
+            if (confirm("Вы уверены, что хотите удалить категорию?")) {
+                event.target.submit()
+            }
+        }
+    </script>
 {% endblock %}

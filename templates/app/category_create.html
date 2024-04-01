@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if cat %}Редактировать{% else %}Добавить{% endif %} категорию{% endblock %}
+
+
+{% block body %}
+    {% if not cat %}
+        <h2>Добавление категории</h2>
+    {% else %}
+        <h2>Редактирование категории №{{ cat.id }}</h2>
+    {% endif %}
+    <form method="post"
+          {% if cat %} action="{% url "app:category_edit" cat.id %}" {% else %} action="{% url "app:category_add" %}" {% endif %}>
+        {% csrf_token %}
+        <input class="form-control{% if errors.name %} is-invalid{% endif %}" name="name"
+               {% if name is not None %} value="{{ name }}" {% elif cat %} value="{{ cat.name }}" {% endif %}
+               placeholder="Введите наименование">
+        {% if errors.name %}
+            <div class="invalid-feedback">
+                {{ errors.name }}
+            </div>
+        {% endif %}
+        <input class="form-control btn btn-primary" type="submit" value="Сохранить">
+    </form>
+{% endblock %}
